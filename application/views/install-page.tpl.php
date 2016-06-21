@@ -26,5 +26,13 @@
         <label for="dbname">Имя базы данных</label>
         <input type="text" class="form-control" id="dbname" name="dbname" value="mvc">
     </div>
-    <button type="submit" class="btn btn-primary">Создать базу и таблицы</button>
+    <div class="alert alert-info">
+        <p>Перед установкой проекта необходимо:</p>
+        <ol>
+            <li>Создать пустой файл /application/config.php</li>
+            <li>Добавить доступ на редактирование к PHP серверу на файл /application/config.php</li>
+            <li>Создать базу данных в MySQL</li>
+        </ol>
+    </div>
+    <button type="submit" class="btn btn-primary">Установить проект</button>
 </form>
