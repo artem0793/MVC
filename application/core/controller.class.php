@@ -9,7 +9,20 @@ abstract class AbstractController {
     private $arguments;
 
     final public function __construct($controller_name, array $args) {
+        $GLOBALS['is_installed'] = file_exists(FILE_CONFIG_PATH) && filesize(FILE_CONFIG_PATH) > 0;
+
+        if (!$GLOBALS['is_installed'] && $controller_name != 'install') {
+            header('Location: /install');
+            exit;
+        }
+
+        if ($GLOBALS['is_installed'] && $controller_name == 'install') {
+            header('Location: /');
+            exit;
+        }
+
         $this->arguments = $args;
+
         $this->view = new View();
 
         $model_path = DAPP . '/models/' . $controller_name . '.class.php';
@@ -20,7 +33,13 @@ abstract class AbstractController {
             require_once $model_path;
 
             if (class_exists($controller_class_name)) {
-                $this->model = new $controller_class_name;
+                $config = array();
+
+                if ($GLOBALS['is_installed']) {
+                    include FILE_CONFIG_PATH;
+                }
+
+                $this->model = new $controller_class_name($config);
             }
         }
 

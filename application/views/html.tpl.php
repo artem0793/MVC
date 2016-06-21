@@ -13,9 +13,12 @@
         <header class="header">
             <h2>Демонстрация MVC шаблона</h2>
             <nav>
+                <?php if ($is_installed): ?>
                 <a href="/">Главная</a>
-                <a href="/blog">Блог</a>
-                <a href="/feedback">Обратная связь</a>
+                <a href="/user/add">Добавить пользователя</a>
+                <?php else: ?>
+                    Настройка и установка.
+                <?php endif; ?>
             </nav>
         </header>
         <div class="page-content"><?php print $page; ?></div>

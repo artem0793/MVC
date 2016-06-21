@@ -33,3 +33,11 @@
   height: 40px;
   background: #f6f6f6;
 }
+
+.form-group.required label::after {
+  display: inline-block;
+  content: '*';
+  color: red;
+  vertical-align: text-bottom;
+  margin-left: 2px;
+}

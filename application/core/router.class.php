@@ -7,8 +7,7 @@ final class Router
     private static $_instance;
 
     private function __construct() {
-
-        $request_uri = trim(urldecode($_SERVER['REQUEST_URI']), '/');
+        $request_uri = trim(parse_url(urldecode($_SERVER['REQUEST_URI']), PHP_URL_PATH), '/');
 
         if (!$request_uri) {
             $request_uri = self::DEFAULT_CONTROLLER_NAME;
