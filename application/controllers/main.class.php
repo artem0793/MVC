@@ -2,6 +2,34 @@
 
 class MainController extends AbstractController {
     function constructor() {
+        if ($this->args(0)) {
+            switch ($this->args(0)) {
+                case 'sms':
+                    switch ($this->args(1)) {
+                        case 'send':
+                            $sms_list = get_request_data(array('sms_list' => TRUE), 'post');
+
+                            if (!empty($sms_list)) {
+                                $this->actionSendSMS($sms_list['sms_list']);
+                            }
+                            else {
+                                Router::setError(404);
+                            }
+                            break;
+
+                        case 'view':
+                            return $this->view->render('sms-status-view-page', array(
+                                'items' => $this->model->getSMSStatusViewList(),
+                            ));
+                            break;
+
+                        default:
+                            Router::setError(404);
+                    }
+                    break;
+            }
+        }
+
         $items = $this->model->getUserList();
         $this->view->addJS('/application/theme/dashboard.js');
         $this->view->addCSS('/application/theme/dashboard.css');
@@ -20,10 +48,15 @@ class MainController extends AbstractController {
             ));
         }
 
-
         return $this->view->render('main-page', array(
             'items' => $items,
             'sms_from' => variable_get('sms_from', array()),
         ));
+    }
+
+    private function actionSendSMS(array $list = array()) {
+        $this->model->addSMSToQueue($list);
+        //@todo Отправить СМСки.
+        exit;
     }
 }

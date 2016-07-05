@@ -22,9 +22,12 @@
 <!--            <a class="item">Права пользователей</a>-->
         </div>
     </div>
-    <a class="item">
+    <div class="item">
         <b><i class="history icon"></i> История</b>
-    </a>
+        <div class="menu">
+            <a class="item" href="<?php print l('/main/sms/view'); ?>">Статус доставки</a>
+        </div>
+    </div>
     <a href="<?php print l('/settings'); ?>" class="item">
         <b><i class="settings icon"></i> Настройки</b>
     </a>

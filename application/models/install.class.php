@@ -48,6 +48,24 @@ class InstallModel extends AbstractModel {
           aid int NOT NULL
         );');
 
+        db_link()->exec('DROP TABLE IF EXISTS sms_log;');
+        db_link()->exec('CREATE TABLE sms_log (
+          sid int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+          uid int NOT NULL,
+          phone varchar(255) NOT NULL,
+          text varchar(255) NOT NULL,
+          service_id varchar(100) NOT NULL,
+          status tinyint NOT NULL,
+          datetime int(11) NOT NULL
+        ) DEFAULT CHARSET=utf8;');
+
+        db_link()->exec('DROP TABLE IF EXISTS sms_log;');
+        db_link()->exec('CREATE TABLE sms_log_activity (
+          sid int(11) NOT NULL,
+          aid int(11) NOT NULL,
+          price float NOT NULL
+        ) DEFAULT CHARSET=utf8;');
+
 //        db_link()->exec('DROP TABLE IF EXISTS permissions;');
 //        db_link()->exec('CREATE TABLE permissions (
 //          name varchar(255) NOT NULL,

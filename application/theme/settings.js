@@ -81,7 +81,9 @@
         }
       }
     }
+
     $sms_from_list.before($sms_from_list_empty);
+
     $sms_from_list.on('mvc:change', (function on_mvc_change() {
       if ($sms_from_list.children().length) {
         $sms_from_list_empty.fadeOut(100);

@@ -15,7 +15,7 @@
                 <label>E-mail</label>
                 <input type="text" name="mail" placeholder="admin@example.com"  value="<?php print $values['mail']; ?>">
             </div>
-            <?php if (!$is_edit || $user->uid !== 1): ?>
+            <?php if (!$is_edit || $user->uid != 1): ?>
             <div class="field required">
                 <label>Роль</label>
                 <select  name="rid" class="ui dropdown">
