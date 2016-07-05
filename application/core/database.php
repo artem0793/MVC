@@ -6,9 +6,14 @@ function db_connect($config) {
     if (!$link) {
         try {
             $link = new PDO(
-                'mysql:dbname=' . $config['dbname'] . ';host=' . $config['host'] . ';charset=UTF8',
-                $config['username'],
-                $config['password'],
+                'mysql:' . http_build_query(array(
+                    'dbname' => $config['db']['name'],
+                    'host' => $config['db']['host'],
+                    'port' => $config['db']['port'],
+                    'charset' => 'UTF8',
+                ), '', ';'),
+                $config['db']['username'],
+                $config['db']['password'],
                 array(
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                     PDO::ATTR_AUTOCOMMIT => TRUE,
@@ -16,7 +21,10 @@ function db_connect($config) {
                 )
             );
         } catch (Exception $e) {
-            return $e->getMessage();
+            header('Content-type: text/html; charset=utf8');
+            Router::setStatus(500);
+            print '<h3>Не удалось подключиться к MySQL серверу.</h3>';
+            exit;
         }
     }
 }

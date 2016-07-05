@@ -1,0 +1,12 @@
+.ui.form textarea {
+  width: auto;
+}
+.column.phone {
+  width: 200px;
+}
+.column.price {
+  width: 190px;
+}
+.input.price {
+  width: 120px;
+}

@@ -1,0 +1,7 @@
+body {
+  background: #dadada;
+}
+
+body > .grid {
+  height: 100%;
+}

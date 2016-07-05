@@ -4,10 +4,16 @@ final class Router
 {
     const DEFAULT_CONTROLLER_NAME = 'main';
 
+    public static $path_suffix = '';
+
     private static $_instance;
 
     private function __construct() {
         $request_uri = trim(parse_url(urldecode($_SERVER['REQUEST_URI']), PHP_URL_PATH), '/');
+
+        if (substr($request_uri, 0, strlen(self::$path_suffix)) == self::$path_suffix) {
+            $request_uri = ltrim(substr($request_uri, strlen(self::$path_suffix)), '/');
+        }
 
         if (!$request_uri) {
             $request_uri = self::DEFAULT_CONTROLLER_NAME;
@@ -49,6 +55,10 @@ final class Router
             case 404:
                 header('HTTP/1.1 404 Not Found');
                 break;
+
+            case 500:
+                header('HTTP/1.1 500 Internal Server Error');
+                break;
         }
     }
 
@@ -59,14 +69,12 @@ final class Router
                 self::setStatus($status);
                 print '<h3>You are forbidden!</h3>';
                 exit;
-                break;
 
             case 404:
                 header('Content-type: text/html; charset=utf8');
                 self::setStatus($status);
                 print '<h3>Page not found</h3>';
                 exit;
-                break;
         }
     }
 

@@ -1,0 +1,8 @@
+.login {
+  margin: 50px auto;
+  width: 400px;
+}
+.login h2.ui.header {
+  display: table;
+  margin: 0 auto;
+}

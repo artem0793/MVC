@@ -1,28 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf8">
-    <title>Веселый молочник</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>MVC</title>
+    <?php if (count($css)): ?>
     <style>
-        @import 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css';
-        @import '/application/theme/style.css';
+        <?php foreach ($css as $path): ?>
+        @import '<?php print l($path); ?>';
+        <?php endforeach; ?>
     </style>
+    <?php endif; ?>
+    <script type="text/javascript">
+        window['MVC'] = <?php print json_encode($js['settings']); ?>;
+    </script>
+    <?php foreach ($js['head'] as $path): ?>
+        <script src="<?php print l($path); ?>"></script>
+    <?php endforeach; ?>
+
 </head>
 <body>
-    <main class="wrapper">
-        <header class="header">
-            <h2>Демонстрация MVC шаблона</h2>
-            <nav>
-                <?php if ($is_installed): ?>
-                <a href="/">Главная</a>
-                <a href="/user/add">Добавить пользователя</a>
-                <?php else: ?>
-                    Настройка и установка.
-                <?php endif; ?>
-            </nav>
-        </header>
-        <div class="page-content"><?php print $page; ?></div>
-        <footer class="footer"></footer>
-    </main>
+<?php foreach ($js['top'] as $path): ?>
+    <script src="<?php print l($path); ?>"></script>
+<?php endforeach; ?>
+<?php print $page; ?>
+<?php foreach ($js['bottom'] as $path): ?>
+    <script src="<?php print l($path); ?>"></script>
+<?php endforeach; ?>
 </body>
 </html>

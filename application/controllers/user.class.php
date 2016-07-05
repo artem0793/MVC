@@ -4,7 +4,14 @@ class UserController extends AbstractController {
     function constructor() {
         $args = $this->args();
 
+        $this->view->addJS('/application/theme/user.js');
+        $this->view->addCSS('/application/theme/user.css');
+
         switch (array_pop($args)) {
+            case '':
+            case 'list':
+                return $this->userListPage();
+
             case 'add':
                 return $this->userAddPage();
 
@@ -15,7 +22,7 @@ class UserController extends AbstractController {
                     Router::setError(404);
                 }
 
-                $user = $this->model->getUserByID($uid);
+                $user = $this->model->userLoad($uid);
 
                 if (empty($user)) {
                     Router::setError(404);
@@ -31,7 +38,7 @@ class UserController extends AbstractController {
                     Router::setError(404);
                 }
 
-                $user = $this->model->getUserByID($uid);
+                $user = $this->model->userLoad($uid);
 
                 if (empty($user)) {
                     Router::setError(404);
@@ -41,93 +48,87 @@ class UserController extends AbstractController {
 
             default:
                 Router::setError(404);
-                break;
         }
-    }
-
-    private function userValidate(array $values = NULL) {
-        $errors = array();
-
-        foreach (array(
-            'firstname' => 'Имя',
-            'lastname' => 'Фамилия',
-            'mail' => 'E-mail',
-        ) as $field_name => $label) {
-            if (empty($values[$field_name])) {
-                $errors[$field_name] = 'Поле "' . $label . '" должно быть заполнено';
-            }
-        }
-
-        if (empty($errors) && !filter_var($values['mail'], FILTER_VALIDATE_EMAIL)) {
-            $errors['mail'] = 'Введен неверный E-mail';
-        }
-
-        return $errors;
     }
 
     private function userAddPage() {
         $values = get_request_data(array(
-            'firstname' => TRUE,
-            'lastname' => TRUE,
-            'mail' => TRUE,
+            'name' => NULL,
+            'mail' => NULL,
+            'rid' => NULL,
+            'password' => NULL,
+            'phone' => array(),
+            'activity' => array(),
         ), 'post');
-        $errors = array();
 
         if (!empty($values)) {
-            $errors = $this->userValidate($values);
+            $this->model->userSave($values);
 
-            if (empty($errors)) {
-                $this->model->userSave($values);
-                header('Location: /');
-                exit;
-            }
+            header('Location: ' . l('/user/list'));
+            exit;
         }
 
         return $this->view->render('user-edit-page', array(
+            'roles' => $this->model->getRoleList(),
+            'activity_list' => ActivityModel::getActivityOptionList(),
             'values' => $values,
             'is_edit' => FALSE,
-            'errors' => $errors,
         ));
     }
 
     private function userEditPage(stdClass $user) {
         $values = get_request_data(array(
-            'firstname' => TRUE,
-            'lastname' => TRUE,
-            'mail' => TRUE,
+            'name' => NULL,
+            'mail' => NULL,
+            'rid' => NULL,
+            'password' => NULL,
+            'phone' => array(),
+            'activity' => array(),
         ), 'post');
 
-        $errors = array();
+        if (empty($values['password'])) {
+            unset($values['password']);
+        }
 
         if (!empty($values)) {
-            $errors = $this->userValidate($values);
+            $this->model->userSave($values + array('uid' => $user->uid));
 
-            if (empty($errors)) {
-                $this->model->userSave($values + array('uid' => $user->uid));
-                header('Location: /');
-                exit;
-            }
+            header('Location: ' . l('/user/list'));
+
+            exit;
         }
 
         return $this->view->render('user-edit-page', array(
+            'roles' => $this->model->getRoleList(),
+            'activity_list' => ActivityModel::getActivityOptionList(),
             'values' => array_merge((array) $values, (array) $user),
             'is_edit' => TRUE,
-            'errors' => $errors,
             'user' => $user,
         ));
     }
 
     private function userDeletePage(stdClass $user) {
-        $values = get_request_data(array('confirm' => FALSE));
+        if ($user->uid == 1) {
+            Router::setError(403);
+        }
 
-        if (!empty($values['confirm'])) {
-            $this->model->userDeleteByID($user->uid);
-            header('Location: /');
+        $values = get_request_data(array('confirm' => TRUE));
+
+        if (!empty($values['confirm']) && $values['confirm'] == 'confirmed') {
+            $this->model->userDelete($user->uid);
+            header('Location: ' . l('/user/list'));
             exit;
         }
 
         return $this->view->render('user-delete-page', array(
             'user' => $user,
+        ));
+    }
+
+
+    private function userListPage() {
+        return $this->view->render('user-list-page', array(
+            'user_list' => $this->model->getUserList(),
         ));
     }
 }
